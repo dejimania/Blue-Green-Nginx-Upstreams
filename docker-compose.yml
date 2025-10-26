@@ -1,0 +1,49 @@
+version: '3.8'
+
+
+services:
+  blue:
+    image: ${BLUE_IMAGE}
+    container_name: app_blue
+    environment:
+      - PORT=${PORT}
+      - RELEASE_ID=${RELEASE_ID_BLUE}
+      - APP_POOL=blue
+    ports:
+      - "8081:${PORT}"
+    networks:
+      - bg-net
+
+  green:
+    image: ${GREEN_IMAGE}
+    container_name: app_green
+    environment:
+      - PORT=${PORT}
+      - RELEASE_ID=${RELEASE_ID_GREEN}
+      - APP_POOL=green
+    ports:
+      - "8082:${PORT}"
+    networks:
+      - bg-net
+
+  nginx:
+    image: nginx:stable
+    container_name: bg_nginx
+    depends_on:
+      - blue
+      - green
+    ports:
+      - "${PORT}:80"
+    volumes:
+      - ./nginx.conf.template:/etc/nginx/nginx.conf.template:ro
+      - ./nginx-entrypoint.sh:/nginx-entrypoint.sh:ro
+    environment:
+      - ACTIVE_POOL=${ACTIVE_POOL}
+      - PORT=${PORT}
+    entrypoint: ["/nginx-entrypoint.sh"]
+    networks:
+      - bg-net
+
+networks:
+  bg-net:
+    driver: bridge
