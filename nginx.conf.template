@@ -30,9 +30,11 @@ http {
             proxy_pass http://node_service;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
 
 
-            # Tight timeouts to detect failures quickly (tweak if needed)
+            # Tight timeouts to detect failures quickly
             proxy_connect_timeout 250ms;
             proxy_send_timeout 500ms;
             proxy_read_timeout 500ms;
@@ -40,6 +42,8 @@ http {
 
             # Allow upstream response headers
             # By default Nginx forwards response headers, so there's nothing to remove here.
+            proxy_pass_header X-App-Pool;
+            proxy_pass_header X-Release-Id;
         }
 
 
