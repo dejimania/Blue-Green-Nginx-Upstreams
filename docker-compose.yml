@@ -37,12 +37,37 @@ services:
     volumes:
       - ./nginx.conf.template:/etc/nginx/nginx.conf.template:ro
       - ./nginx-entrypoint.sh:/nginx-entrypoint.sh:ro
+      - ./logs:/var/log/nginx
     environment:
       - ACTIVE_POOL=${ACTIVE_POOL}
       - PORT=${PORT}
     entrypoint: ["/nginx-entrypoint.sh"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/healthz"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
     networks:
       - bg-net
+
+  alert_watcher:
+    image: python:3.11-slim
+    container_name: alert_watcher
+    depends_on:
+      - nginx
+    volumes:
+      - ./logs:/var/log/nginx:ro
+      - ./watcher:/app:ro
+    env_file:
+      - .env
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "pip install requests && python /app/watch_logs.py"
+    restart: unless-stopped
+
+volumes:
+  logs:
+    driver: local
 
 networks:
   bg-net:
