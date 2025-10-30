@@ -40,7 +40,7 @@ Both apps exposes these endpoints (already implemented inside the images):
 4. Induce failure on Blue:
    ```bash
    curl -X POST "http://localhost:8081/chaos/start?mode=error"
-   curl -X POST http://localhost:8081/chaos/start
+   curl -X POST http://localhost:8081/chaos/start?mode=timeout
    ```
 5. Verify failover to Green:
    ```bash

@@ -33,7 +33,7 @@ Meaning:
 - The primary is serving traffic again (watcher will detect pool change back).
 Action:
 - Confirm application functionality and close the incident. Optionally run a smoke test:
-  - `curl http://localhost:8080/version`
+  - `curl -i http://localhost:8080/version`
 
 ## Suppressing Alerts (Maintenance Mode)
 Set `MAINTENANCE_MODE=1` in `.env` and `docker compose restart alert_watcher` to temporarily stop alerts during planned tests.
