@@ -20,6 +20,9 @@ export PORT
 export BLUE_BACKUP
 export GREEN_BACKUP
 
+# Ensure log dir exists and permissions
+mkdir -p /var/log/nginx
+chown -R nginx:nginx /var/log/nginx || true
 
 # Render template
 envsubst '$PORT $BLUE_BACKUP $GREEN_BACKUP' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
