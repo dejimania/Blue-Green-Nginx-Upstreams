@@ -57,12 +57,13 @@ services:
       - nginx
     volumes:
       - ./logs:/var/log/nginx:ro
-      - ./watcher:/app:ro
+      - ./watcher.py:/app/watcher.py:ro
+      - ./requirements.txt:/requirements.txt:ro
     env_file:
       - .env
     entrypoint: ["/bin/sh", "-c"]
     command: >
-      "pip install requests && python /app/watch_logs.py"
+      "pip install -r requirements.txt && python /app/watcher.py"
     restart: unless-stopped
 
 volumes:
